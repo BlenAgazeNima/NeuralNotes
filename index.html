@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neural Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --rose: #d4638a; --rose-light: #faedf2; --rose-mid: #f0c5d4; --rose-deep: #b84872;
+  --blush: #fdf5f8; --ink: #1c1118; --ink-mid: #42293a; --ink-soft: #7a6170; --white: #ffffff;
+  --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif; --mono: 'DM Mono', monospace;
+  --tag-project-bg: #eef3fd; --tag-project-fg: #2a52a0;
+  --tag-hackathon-bg: #f0faf4; --tag-hackathon-fg: #1e6645;
+  --tag-course-bg: #fdf3e7; --tag-course-fg: #8c5200;
+  --tag-concept-bg: #faedf2; --tag-concept-fg: #b84872;
+  --r-md: 12px; --r-lg: 20px; --r-xl: 28px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--blush); color: var(--ink); line-height: 1.7; font-size: 16px; font-weight: 300; }
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(253,245,248,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--rose-mid);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 58px;
+}
+.nav-logo { font-family: var(--serif); font-size: 1.2rem; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rose); display: inline-block; }
+.nav-right-group { display: flex; align-items: center; gap: 1.5rem; }
+.nav-filters { display: flex; gap: 6px; }
+.filter-btn {
+  font-size: 11px; font-weight: 400; padding: 4px 13px; border-radius: 99px;
+  border: 1px solid var(--rose-mid); color: var(--ink-soft); background: transparent;
+  cursor: pointer; font-family: var(--sans); transition: all .18s;
+}
+.filter-btn:hover { border-color: var(--rose); color: var(--rose-deep); }
+.filter-btn.active { background: var(--rose-deep); color: #fff; border-color: var(--rose-deep); }
+.filter-btn[data-filter="project"].active  { background: var(--tag-project-fg);  border-color: var(--tag-project-fg); }
+.filter-btn[data-filter="hackathon"].active { background: var(--tag-hackathon-fg); border-color: var(--tag-hackathon-fg); }
+.filter-btn[data-filter="course"].active   { background: var(--tag-course-fg);   border-color: var(--tag-course-fg); }
+.filter-btn[data-filter="concept"].active  { background: var(--tag-concept-fg);  border-color: var(--tag-concept-fg); }
+
+.nav-admin-link { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: color 0.2s; }
+.nav-admin-link:hover { color: var(--rose-deep); }
+
+/* HERO */
+.hero { max-width: 900px; margin: 0 auto; padding: 70px 2.5rem 56px; display: grid; grid-template-columns: 1fr 200px; gap: 3rem; align-items: end; }
+.hero-kicker { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rose); margin-bottom: 1.1rem; }
+.hero h1 { font-family: var(--serif); font-size: clamp(2.8rem, 6vw, 4.2rem); line-height: 1.05; letter-spacing: -0.025em; margin-bottom: 1rem; }
+.hero h1 em { font-style: italic; color: var(--rose-deep); }
+.hero-sub { font-size: 15px; color: var(--ink-soft); max-width: 420px; line-height: 1.75; }
+.hero-right { text-align: right; padding-bottom: 4px; }
+.hero-count { font-family: var(--serif); font-size: 5rem; color: var(--rose-mid); line-height: 1; display: block; letter-spacing: -0.04em; }
+.hero-count-label { font-size: 12px; color: var(--ink-soft); margin-top: 4px; display: block; letter-spacing: 0.04em; }
+
+.rule { height: 1px; background: var(--rose-mid); max-width: 900px; margin: 0 auto; }
+
+/* MAIN */
+.main { max-width: 900px; margin: 0 auto; padding: 52px 2.5rem 80px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px; }
+.section-title { font-family: var(--serif); font-size: 1.5rem; font-weight: 400; color: var(--ink); }
+.section-meta { font-family: var(--mono); font-size: 11px; color: var(--rose); }
+
+/* PINNED */
+.pinned {
+  background: var(--ink); border-radius: var(--r-xl); padding: 2.4rem 2.8rem;
+  display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center;
+  margin-bottom: 20px; text-decoration: none; transition: opacity .2s;
+}
+.pinned:hover { opacity: 0.9; }
+.pinned-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rose); margin-bottom: 0.7rem; }
+.pinned h2 { font-family: var(--serif); font-size: 1.9rem; line-height: 1.15; color: #fff; font-weight: 400; margin-bottom: 0.7rem; letter-spacing: -0.015em; }
+.pinned p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+.pinned-meta { display: flex; gap: 12px; align-items: center; margin-top: 1.2rem; }
+.pinned-cat { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: rgba(212,99,138,0.2); color: var(--rose); }
+.pinned-date { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); }
+.pinned-arrow { width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; flex-shrink: 0; }
+.pinned.hidden { display: none; }
+
+/* GRID */
+.posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.post-card {
+  background: var(--white); border: 1px solid var(--rose-mid); border-radius: var(--r-lg);
+  padding: 1.4rem 1.5rem; text-decoration: none; color: inherit;
+  display: flex; flex-direction: column; gap: 8px; transition: border-color .2s, transform .18s;
+  position: relative;
+}
+.post-card:hover { border-color: var(--rose); transform: translateY(-2px); }
+.post-card.hidden { display: none; }
+.post-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; align-self: flex-start; }
+.tag-project   { background: var(--tag-project-bg);   color: var(--tag-project-fg); }
+.tag-hackathon { background: var(--tag-hackathon-bg);  color: var(--tag-hackathon-fg); }
+.tag-course    { background: var(--tag-course-bg);    color: var(--tag-course-fg); }
+.tag-concept   { background: var(--tag-concept-bg);   color: var(--tag-concept-fg); }
+.post-card h3 { font-family: var(--serif); font-size: 1.05rem; line-height: 1.3; font-weight: 400; color: var(--ink); }
+.post-card p  { font-size: 13px; color: var(--ink-soft); line-height: 1.65; flex: 1; }
+.post-footer  { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+.post-date    { font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); }
+.post-arrow   { font-size: 14px; color: var(--rose-mid); }
+
+/* Empty */
+.empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--ink-soft); font-size: 14px; display: none; }
+.empty-state span { font-size: 28px; display: block; margin-bottom: 12px; }
+
+/* ABOUT STRIP */
+.about-strip {
+  background: var(--rose-light); border: 1px solid var(--rose-mid); border-radius: var(--r-xl);
+  padding: 2.2rem 2.6rem; margin-top: 56px;
+  display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center;
+}
+.about-strip h3 { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; margin-bottom: 0.5rem; }
+.about-strip p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; max-width: 500px; }
+.about-links { display: flex; flex-direction: column; gap: 8px; }
+.about-link {
+  display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ink-mid);
+  background: var(--white); border: 1px solid var(--rose-mid); border-radius: 99px;
+  padding: 8px 18px; text-decoration: none; white-space: nowrap; transition: border-color .2s, color .2s;
+}
+.about-link:hover { border-color: var(--rose); color: var(--rose-deep); }
+
+footer { border-top: 1px solid var(--rose-mid); padding: 24px 2.5rem; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--ink-soft); }
+footer a { color: var(--rose-deep); text-decoration: none; }
+
+/* ── ADMIN ── */
+#admin-page {
+  display: none; min-height: 100vh; background: var(--blush);
+}
+.admin-wrap { max-width: 680px; margin: 0 auto; padding: 60px 2rem 80px; }
+.admin-head { margin-bottom: 40px; }
+.admin-head h1 { font-family: var(--serif); font-size: 2.2rem; color: var(--ink); font-weight: 400; margin-bottom: 6px; }
+.admin-head p { font-size: 14px; color: var(--ink-soft); }
+
+.admin-form { display: flex; flex-direction: column; gap: 20px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12px; font-weight: 500; color: var(--ink-mid); letter-spacing: 0.04em; text-transform: uppercase; font-family: var(--mono); }
+.field input, .field textarea, .field select {
+  font-family: var(--sans); font-size: 15px; font-weight: 300; color: var(--ink);
+  background: var(--white); border: 1px solid var(--rose-mid); border-radius: var(--r-md);
+  padding: 11px 14px; outline: none; transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--rose); }
+.field textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
+.field select { cursor: pointer; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.admin-actions { display: flex; gap: 12px; align-items: center; padding-top: 8px; }
+.btn-publish {
+  background: var(--rose-deep); color: #fff; font-size: 14px; font-weight: 500;
+  padding: 12px 28px; border-radius: 99px; border: none; cursor: pointer;
+  font-family: var(--sans); transition: opacity .2s;
+}
+.btn-publish:hover { opacity: 0.88; }
+.btn-cancel {
+  background: transparent; color: var(--ink-soft); font-size: 13px; font-weight: 400;
+  padding: 12px 20px; border-radius: 99px; border: 1px solid var(--rose-mid); cursor: pointer;
+  font-family: var(--sans); transition: border-color .2s, color .2s;
+}
+.btn-cancel:hover { border-color: var(--rose); color: var(--rose-deep); }
+
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: #fff; font-size: 13px; font-family: var(--sans);
+  padding: 12px 24px; border-radius: 99px; opacity: 0; transition: opacity .3s;
+  pointer-events: none; z-index: 999; white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+
+/* MANAGE POSTS */
+.manage-section { margin-top: 56px; }
+.manage-section h2 { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; margin-bottom: 16px; }
+.manage-list { display: flex; flex-direction: column; gap: 10px; }
+.manage-item {
+  background: var(--white); border: 1px solid var(--rose-mid); border-radius: var(--r-md);
+  padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+}
+.manage-item-info { flex: 1; min-width: 0; }
+.manage-item-title { font-size: 14px; font-weight: 400; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.manage-item-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+.manage-item-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn-pin, .btn-delete {
+  font-size: 11px; font-weight: 400; padding: 5px 12px; border-radius: 99px;
+  border: 1px solid var(--rose-mid); cursor: pointer; font-family: var(--sans); transition: all .18s;
+  background: transparent; color: var(--ink-soft);
+}
+.btn-pin:hover { border-color: var(--rose-deep); color: var(--rose-deep); }
+.btn-pin.pinned-active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn-delete:hover { border-color: #e24b4a; color: #e24b4a; }
+.manage-empty { font-size: 14px; color: var(--ink-soft); text-align: center; padding: 32px 0; }
+
+/* URL hint */
+.url-hint { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); margin-top: 24px; text-align: center; }
+.url-hint strong { color: var(--rose-deep); }
+
+/* RESPONSIVE */
+@media (max-width: 720px) {
+  .hero { grid-template-columns: 1fr; } .hero-right { display: none; }
+  .posts-grid { grid-template-columns: 1fr; } .nav-filters { display: none; }
+  .pinned { grid-template-columns: 1fr; } .pinned-arrow { display: none; }
+  .about-strip { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; transform: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ── PUBLIC BLOG ── -->
+<div id="blog-page">
+  <nav>
+    <a class="nav-logo" href="#" onclick="showBlog()"><span class="nav-dot"></span> Neural Notes</a>
+    <div class="nav-right-group">
+      <div class="nav-filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="project">Projects</button>
+        <button class="filter-btn" data-filter="hackathon">Hackathons</button>
+        <button class="filter-btn" data-filter="course">Courses</button>
+        <button class="filter-btn" data-filter="concept">Concepts</button>
+      </div>
+      <a class="nav-admin-link" href="?admin">⌥ Admin</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <p class="hero-kicker">Machine learning · portfolio blog</p>
+      <h1>Neural<br><em>Notes</em></h1>
+      <p class="hero-sub">Projects built, hackathons entered, courses finished, concepts explored. A running log of what I'm actually doing in ML.</p>
+    </div>
+    <div class="hero-right" aria-hidden="true">
+      <span class="hero-count" id="post-counter">0</span>
+      <span class="hero-count-label">posts so far</span>
+    </div>
+  </header>
+
+  <div class="rule"></div>
+
+  <main class="main">
+    <div class="section-head">
+      <h2 class="section-title">Latest</h2>
+      <span class="section-meta" id="filter-label">Showing all posts</span>
+    </div>
+
+    <!-- PINNED -->
+    <a href="#" class="pinned hidden" id="pinned-post" data-id="">
+      <div>
+        <p class="pinned-kicker">Featured · <span id="pinned-cat-label"></span></p>
+        <h2 id="pinned-title"></h2>
+        <p id="pinned-desc"></p>
+        <div class="pinned-meta">
+          <span class="pinned-cat" id="pinned-cat-badge"></span>
+          <span class="pinned-date" id="pinned-date"></span>
+        </div>
+      </div>
+      <div class="pinned-arrow" aria-hidden="true">→</div>
+    </a>
+
+    <div class="posts-grid" id="posts-grid">
+      <div class="empty-state" id="empty-state">
+        <span>🌸</span>
+        No posts yet — <a href="?admin" style="color:var(--rose-deep)">go to admin</a> to add your first one.
+      </div>
+    </div>
+
+    <div class="about-strip">
+      <div>
+        <h3>About this blog</h3>
+        <p>Neural Notes is where I document the ML work I'm actually doing — projects, hackathons, courses, and concepts I'm working through. Updated whenever I build or learn something worth writing about.</p>
+      </div>
+      <div class="about-links">
+        <a href="https://github.com/BlenAgazeNima" class="about-link" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/blen-nima/" class="about-link" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:nimablenagaze@gmail.com" class="about-link">✉ Email</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Neural Notes · <a href="?admin">Admin Login</a> · <a href="#">↑ back to top</a></p>
+  </footer>
+</div>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="login-screen" style="display:none; min-height:100vh; align-items:center; justify-content:center; background:var(--blush);">
+  <div style="text-align:center; width:100%; max-width:340px; padding:2rem;">
+    <div style="font-family:var(--serif); font-size:1.8rem; color:var(--ink); margin-bottom:6px;">Neural Notes</div>
+    <div style="font-family:var(--mono); font-size:11px; color:var(--rose); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:2rem;">admin access</div>
+    <input
+      id="pw-input" type="password" placeholder="Enter password"
+      onkeydown="if(event.key==='Enter') attemptLogin()"
+      style="width:100%; font-family:var(--sans); font-size:15px; font-weight:300; color:var(--ink);
+             background:var(--white); border:1px solid var(--rose-mid); border-radius:var(--r-md);
+             padding:12px 16px; outline:none; text-align:center; letter-spacing:0.1em; margin-bottom:12px;">
+    <button onclick="attemptLogin()"
+      style="width:100%; background:var(--rose-deep); color:#fff; font-size:14px; font-weight:500;
+             padding:12px; border-radius:99px; border:none; cursor:pointer; font-family:var(--sans);">
+      Enter
+    </button>
+    <div id="pw-error" style="font-size:12px; color:#e24b4a; margin-top:10px; opacity:0; transition:opacity .3s;">
+      Incorrect password — try again.
+    </div>
+    <a href="#" onclick="showBlog(); return false;" style="display:block; margin-top:1.5rem; font-size:12px; color:var(--ink-soft); text-decoration:none;">← Back to blog</a>
+  </div>
+</div>
+
+<!-- ── ADMIN PAGE ── -->
+<div id="admin-page">
+  <nav>
+    <a class="nav-logo" href="#" onclick="showBlog(); return false;"><span class="nav-dot"></span> Neural Notes</a>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--rose);">admin panel</div>
+  </nav>
+
+  <div class="admin-wrap">
+    <div class="admin-head">
+      <h1>New post</h1>
+      <p>Fill in the details below and hit publish. It'll appear on your blog instantly.</p>
+    </div>
+
+    <div class="admin-form" id="admin-form">
+      <div class="field-row">
+        <div class="field">
+          <label for="f-cat">Category</label>
+          <select id="f-cat">
+            <option value="project">Project</option>
+            <option value="hackathon">Hackathon</option>
+            <option value="course">Course / Cert</option>
+            <option value="concept">Concept</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-date">Date</label>
+          <input type="month" id="f-date">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-title">Title</label>
+        <input type="text" id="f-title" placeholder="e.g. Built a sentiment classifier on tweet data">
+      </div>
+
+      <div class="field">
+        <label for="f-desc">Short description</label>
+        <textarea id="f-desc" placeholder="2–3 sentences. What did you do, what did you learn, what's interesting about it?"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="f-link">Link (optional)</label>
+        <input type="url" id="f-link" placeholder="https://github.com/you/project">
+      </div>
+
+      <div class="admin-actions">
+        <button class="btn-publish" id="publish-btn" onclick="publishPost()">Publish post</button>
+        <button class="btn-cancel" onclick="showBlog()">← Back to blog</button>
+      </div>
+    </div>
+
+    <!-- MANAGE -->
+    <div class="manage-section">
+      <h2>Manage posts</h2>
+      <div class="manage-list" id="manage-list">
+        <p class="manage-empty" id="manage-empty">No posts yet.</p>
+      </div>
+    </div>
+
+    <p class="url-hint">Access this panel anytime by clicking the <strong>Admin</strong> link in the navigation menu.</p>
+  </div>
+</div>
+
+<script>
+// ── STORAGE CONFIGURATION ──
+const STORAGE_KEY = 'neural_notes_posts';
+const PINNED_KEY  = 'neural_notes_pinned';
+const AUTH_KEY    = 'nn_auth';
+
+
+const SECURE_PASSWORD = "V_ADMIN_PASSWORD"; 
+
+function isAuthed() { 
+  return sessionStorage.getItem(AUTH_KEY) === '1'; 
+}
+
+// ── ROUTING & ENGINE CONTROLS ──
+function isAdminRoute() { 
+  return window.location.search.includes('admin'); 
+}
+
+function showBlog() { 
+  window.history.replaceState({}, document.title, window.location.pathname);
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-page').style.display = 'none';
+  document.getElementById('blog-page').style.display = 'block';
+  renderBlog();
+}
+
+function showLoginScreen() {
+  document.getElementById('blog-page').style.display = 'none';
+  document.getElementById('admin-page').style.display = 'none';
+  const screen = document.getElementById('login-screen');
+  screen.style.display = 'flex';
+  setTimeout(() => {
+    const input = document.getElementById('pw-input');
+    if(input) input.focus();
+  }, 50);
+}
+
+function showAdminDashboard() {
+  document.getElementById('blog-page').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-page').style.display = 'block';
+  renderManage();
+}
+
+function attemptLogin() {
+  const val = document.getElementById('pw-input').value;
+  
+  // Guard clause against raw replacement strings in deployment
+  const activePassword = (SECURE_PASSWORD.startsWith('%') && SECURE_PASSWORD.endsWith('%')) ? '8540' : SECURE_PASSWORD;
+
+  if (val === activePassword) {
+    sessionStorage.setItem(AUTH_KEY, '1');
+    showAdminDashboard();
+  } else {
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-error').style.opacity = '1';
+    setTimeout(() => document.getElementById('pw-error').style.opacity = '0', 2000);
+  }
+}
+
+// ── DATA ACCESS LAYER ──
+function loadPosts() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+function savePosts(posts) { 
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts)); 
+}
+function loadPinned() { 
+  return localStorage.getItem(PINNED_KEY) || null; 
+}
+function savePinned(id) { 
+  if (id) localStorage.setItem(PINNED_KEY, id); else localStorage.removeItem(PINNED_KEY); 
+}
+
+// ── UI DICTIONARIES ──
+const catLabel = { project: 'Project', hackathon: 'Hackathon', course: 'Course / Cert', concept: 'Concept' };
+const catTagClass = { project: 'tag-project', hackathon: 'tag-hackathon', course: 'tag-course', concept: 'tag-concept' };
+
+function fmtDate(val) {
+  if (!val) return '';
+  const parts = val.split('-');
+  if(parts.length < 2) return '';
+  const y = parts[0];
+  const m = parts[1];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[parseInt(m,10)-1] + ' ' + y;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── BLOG RENDER COMPONENT ──
+function renderBlog() {
+  const posts = loadPosts();
+  const pinnedId = loadPinned();
+  const grid = document.getElementById('posts-grid');
+  const empty = document.getElementById('empty-state');
+  const pinnedEl = document.getElementById('pinned-post');
+  const counter = document.getElementById('post-counter');
+
+  if(!grid || !empty || !pinnedEl || !counter) return;
+
+  // Purge current dynamic cards
+  Array.from(grid.querySelectorAll('.post-card')).forEach(c => c.remove());
+  counter.textContent = posts.length;
+
+  // Process Pin UI Elements
+  const pinnedPost = posts.find(p => p.id === pinnedId);
+  if (pinnedPost) {
+    pinnedEl.classList.remove('hidden');
+    pinnedEl.dataset.id = pinnedPost.id;
+    pinnedEl.href = pinnedPost.link || '#';
+    if (pinnedPost.link) { pinnedEl.target = '_blank'; pinnedEl.rel = 'noopener'; }
+    
+    document.getElementById('pinned-cat-label').textContent = catLabel[pinnedPost.cat] || '';
+    document.getElementById('pinned-title').textContent = pinnedPost.title || '';
+    document.getElementById('pinned-desc').textContent = pinnedPost.desc || '';
+    document.getElementById('pinned-cat-badge').textContent = catLabel[pinnedPost.cat] || '';
+    document.getElementById('pinned-date').textContent = fmtDate(pinnedPost.date);
+  } else {
+    pinnedEl.classList.add('hidden');
+  }
+
+  // Render main post loop cards
+  const gridPosts = posts.filter(p => p.id !== pinnedId);
+
+  if (posts.length === 0) {
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = gridPosts.length === 0 ? 'block' : 'none';
+    gridPosts.forEach(p => {
+      const card = document.createElement('a');
+      card.className = 'post-card';
+      card.href = p.link || '#';
+      card.dataset.type = p.cat;
+      if (p.link) { card.target = '_blank'; card.rel = 'noopener'; }
+      card.innerHTML = `
+        <span class="post-tag ${catTagClass[p.cat]}">${catLabel[p.cat]}</span>
+        <h3>${p.title}</h3>
+        <p>${p.desc}</p>
+        <div class="post-footer">
+          <span class="post-date">${fmtDate(p.date)}</span>
+          <span class="post-arrow">→</span>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+  attachFilters();
+}
+
+// ── FILTER SYSTEM COMPONENT ──
+function attachFilters() {
+  const btns = document.querySelectorAll('.filter-btn');
+  const pinnedEl = document.getElementById('pinned-post');
+  const label = document.getElementById('filter-label');
+  const empty = document.getElementById('empty-state');
+
+  btns.forEach(btn => {
+    btn.onclick = () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      let visible = 0;
+
+      document.querySelectorAll('.post-card').forEach(c => {
+        const show = f === 'all' || c.dataset.type === f;
+        c.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+
+      const pinnedId = loadPinned();
+      const posts = loadPosts();
+      const pp = posts.find(p => p.id === pinnedId);
+      const pinnedMatch = f === 'all' || (pp && pp.cat === f);
+      if (pinnedEl) pinnedEl.classList.toggle('hidden', !pinnedMatch);
+      if (pinnedMatch && pp) visible++;
+
+      if (document.getElementById('post-counter')) {
+        document.getElementById('post-counter').textContent = f === 'all' ? posts.length : visible;
+      }
+      if (label) {
+        label.textContent = f === 'all' ? 'Showing all posts' : `${visible} post${visible !== 1 ? 's' : ''} · ${catLabel[f] || f}`;
+      }
+      if (empty) {
+        empty.style.display = visible === 0 ? 'block' : 'none';
+      }
+    };
+  });
+}
+
+// ── WRITE OPERATIONS ──
+function publishPost() {
+  const title = document.getElementById('f-title').value.trim();
+  const desc  = document.getElementById('f-desc').value.trim();
+  const cat   = document.getElementById('f-cat').value;
+  const date  = document.getElementById('f-date').value;
+  const link  = document.getElementById('f-link').value.trim();
+
+  if (!title) { toast('Please add a title.'); return; }
+  if (!desc)  { toast('Please add a description.'); return; }
+
+  const posts = loadPosts();
+  const id = 'post_' + Date.now();
+  posts.unshift({ id, title, desc, cat, date, link });
+  savePosts(posts);
+
+  if (posts.length === 1) savePinned(id);
+
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-link').value = '';
+
+  toast('Post published! 🌸');
+  renderManage();
+}
+
+// ── CONTENT MANAGEMENT LAYER ──
+function renderManage() {
+  const posts = loadPosts();
+  const pinnedId = loadPinned();
+  const list = document.getElementById('manage-list');
+  const empty = document.getElementById('manage-empty');
+
+  if(!list || !empty) return;
+  Array.from(list.querySelectorAll('.manage-item')).forEach(i => i.remove());
+
+  if (posts.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  posts.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'manage-item';
+    item.dataset.id = p.id;
+    const isPinned = p.id === pinnedId;
+    item.innerHTML = `
+      <div class="manage-item-info">
+        <div class="manage-item-title">${p.title}</div>
+        <div class="manage-item-meta">${catLabel[p.cat]} · ${fmtDate(p.date)}</div>
+      </div>
+      <div class="manage-item-actions">
+        <button class="btn-pin ${isPinned ? 'pinned-active' : ''}" onclick="togglePin('${p.id}')">${isPinned ? '★ Featured' : '☆ Feature'}</button>
+        <button class="btn-delete" onclick="deletePost('${p.id}')">Delete</button>
+      </div>`;
+    list.appendChild(item);
+  });
+}
+
+function togglePin(id) {
+  const current = loadPinned();
+  savePinned(current === id ? null : id);
+  renderManage();
+  toast(current === id ? 'Unpinned.' : 'Post featured on homepage!');
+}
+
+function deletePost(id) {
+  if (!confirm('Delete this post?')) return;
+  let posts = loadPosts();
+  posts = posts.filter(p => p.id !== id);
+  savePosts(posts);
+  if (loadPinned() === id) savePinned(null);
+  renderManage();
+  toast('Post deleted.');
+}
+
+// ── INITIALIZATION ORCHESTRATOR ──
+window.addEventListener('DOMContentLoaded', () => {
+  const now = new Date();
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const dateInput = document.getElementById('f-date');
+  if(dateInput) dateInput.value = `${now.getFullYear()}-${mm}`;
+
+  if (isAdminRoute()) {
+    if (isAuthed()) {
+      showAdminDashboard();
+    } else {
+      showLoginScreen();
+    }
+  } else {
+    renderBlog();
+  }
+});
+</script>
+</body>
+</html>
