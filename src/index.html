@@ -30,7 +30,7 @@ nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 2.5rem; height: 58px;
 }
-.nav-logo { font-family: var(--serif); font-size: 1.2rem; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.nav-logo { font-family: var(--serif); font-size: 1.2rem; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 8px; cursor: pointer; }
 .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rose); display: inline-block; }
 .nav-right-group { display: flex; align-items: center; gap: 1.5rem; }
 .nav-filters { display: flex; gap: 6px; }
@@ -43,10 +43,10 @@ nav {
 .filter-btn.active { background: var(--rose-deep); color: #fff; border-color: var(--rose-deep); }
 .filter-btn[data-filter="project"].active  { background: var(--tag-project-fg);  border-color: var(--tag-project-fg); }
 .filter-btn[data-filter="hackathon"].active { background: var(--tag-hackathon-fg); border-color: var(--tag-hackathon-fg); }
-.filter-btn[data-filter="course"].active   { background: var(--tag-course-fg);   border-color: var(--tag-course-fg); }
-.filter-btn[data-filter="concept"].active  { background: var(--tag-concept-fg);  border-color: var(--tag-concept-fg); }
+.filter-btn[data-filter="course"].active    { background: var(--tag-course-fg);   border-color: var(--tag-course-fg); }
+.filter-btn[data-filter="concept"].active   { background: var(--tag-concept-fg);  border-color: var(--tag-concept-fg); }
 
-.nav-admin-link { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: color 0.2s; }
+.nav-admin-link { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: color 0.2s; cursor: pointer; }
 .nav-admin-link:hover { color: var(--rose-deep); }
 
 /* HERO */
@@ -81,7 +81,7 @@ nav {
 .pinned-cat { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: rgba(212,99,138,0.2); color: var(--rose); }
 .pinned-date { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); }
 .pinned-arrow { width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; flex-shrink: 0; }
-.pinned.hidden { display: none; }
+.pinned.hidden { display: none !important; }
 
 /* GRID */
 .posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
@@ -92,7 +92,7 @@ nav {
   position: relative;
 }
 .post-card:hover { border-color: var(--rose); transform: translateY(-2px); }
-.post-card.hidden { display: none; }
+.post-card.hidden { display: none !important; }
 .post-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; align-self: flex-start; }
 .tag-project   { background: var(--tag-project-bg);   color: var(--tag-project-fg); }
 .tag-hackathon { background: var(--tag-hackathon-bg);  color: var(--tag-hackathon-fg); }
@@ -125,7 +125,7 @@ nav {
 .about-link:hover { border-color: var(--rose); color: var(--rose-deep); }
 
 footer { border-top: 1px solid var(--rose-mid); padding: 24px 2.5rem; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--ink-soft); }
-footer a { color: var(--rose-deep); text-decoration: none; }
+footer a { color: var(--rose-deep); text-decoration: none; cursor: pointer; }
 
 /* ── ADMIN ── */
 #admin-page {
@@ -195,7 +195,6 @@ footer a { color: var(--rose-deep); text-decoration: none; }
 .btn-delete:hover { border-color: #e24b4a; color: #e24b4a; }
 .manage-empty { font-size: 14px; color: var(--ink-soft); text-align: center; padding: 32px 0; }
 
-/* URL hint */
 .url-hint { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); margin-top: 24px; text-align: center; }
 .url-hint strong { color: var(--rose-deep); }
 
@@ -212,13 +211,11 @@ footer a { color: var(--rose-deep); text-decoration: none; }
 </head>
 <body>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ── PUBLIC BLOG ── -->
 <div id="blog-page">
   <nav>
-    <a class="nav-logo" href="#" onclick="showBlog()"><span class="nav-dot"></span> Neural Notes</a>
+    <a class="nav-logo" id="logo-home"><span class="nav-dot"></span> Neural Notes</a>
     <div class="nav-right-group">
       <div class="nav-filters">
         <button class="filter-btn active" data-filter="all">All</button>
@@ -227,15 +224,15 @@ footer a { color: var(--rose-deep); text-decoration: none; }
         <button class="filter-btn" data-filter="course">Courses</button>
         <button class="filter-btn" data-filter="concept">Concepts</button>
       </div>
-      <a class="nav-admin-link" href="?admin">⌥ Admin</a>
+      <a class="nav-admin-link" id="nav-go-admin">⌥ Admin</a>
     </div>
   </nav>
 
   <header class="hero">
     <div>
-      <p class="hero-kicker">Machine learning · portfolio blog</p>
+      <p class="hero-kicker">Machine learning · Data Science · portfolio blog</p>
       <h1>Neural<br><em>Notes</em></h1>
-      <p class="hero-sub">Projects built, hackathons entered, courses finished, concepts explored. A running log of what I'm actually doing in ML.</p>
+      <p class="hero-sub">Hi, I'm Blen. I'm a Computing and Information Technology student exploring machine learning, data science, and AI. This blog documents my projects, experiments, hackathons, and lessons learned.</p>
     </div>
     <div class="hero-right" aria-hidden="true">
       <span class="hero-count" id="post-counter">0</span>
@@ -251,8 +248,7 @@ footer a { color: var(--rose-deep); text-decoration: none; }
       <span class="section-meta" id="filter-label">Showing all posts</span>
     </div>
 
-    <!-- PINNED -->
-    <a href="#" class="pinned hidden" id="pinned-post" data-id="">
+    <a href="#" class="pinned hidden" id="pinned-post">
       <div>
         <p class="pinned-kicker">Featured · <span id="pinned-cat-label"></span></p>
         <h2 id="pinned-title"></h2>
@@ -268,7 +264,7 @@ footer a { color: var(--rose-deep); text-decoration: none; }
     <div class="posts-grid" id="posts-grid">
       <div class="empty-state" id="empty-state">
         <span>🌸</span>
-        No posts yet — <a href="?admin" style="color:var(--rose-deep)">go to admin</a> to add your first one.
+        No posts found matching this criteria.
       </div>
     </div>
 
@@ -286,38 +282,44 @@ footer a { color: var(--rose-deep); text-decoration: none; }
   </main>
 
   <footer>
-    <p>Neural Notes · <a href="?admin">Admin Login</a> · <a href="#">↑ back to top</a></p>
+    <p>Neural Notes · <a id="footer-admin-link">Admin Login</a> · <a href="#">↑ back to top</a></p>
   </footer>
 </div>
 
-<!-- ── LOGIN SCREEN ── -->
 <div id="login-screen" style="display:none; min-height:100vh; align-items:center; justify-content:center; background:var(--blush);">
   <div style="text-align:center; width:100%; max-width:340px; padding:2rem;">
     <div style="font-family:var(--serif); font-size:1.8rem; color:var(--ink); margin-bottom:6px;">Neural Notes</div>
     <div style="font-family:var(--mono); font-size:11px; color:var(--rose); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:2rem;">admin access</div>
-    <input
-      id="pw-input" type="password" placeholder="Enter password"
-      onkeydown="if(event.key==='Enter') attemptLogin()"
-      style="width:100%; font-family:var(--sans); font-size:15px; font-weight:300; color:var(--ink);
-             background:var(--white); border:1px solid var(--rose-mid); border-radius:var(--r-md);
-             padding:12px 16px; outline:none; text-align:center; letter-spacing:0.1em; margin-bottom:12px;">
-    <button onclick="attemptLogin()"
-      style="width:100%; background:var(--rose-deep); color:#fff; font-size:14px; font-weight:500;
-             padding:12px; border-radius:99px; border:none; cursor:pointer; font-family:var(--sans);">
-      Enter
+    
+    <div style="margin-bottom: 12px; text-align: left;">
+      <label style="font-family:var(--mono); font-size:10px; color:var(--ink-soft); display:block; margin-bottom:4px;">EMAIL</label>
+      <input id="email-input" type="email" placeholder="admin@email.com" 
+             style="width:100%; font-family:var(--sans); font-size:14px; background:var(--white); border:1px solid var(--rose-mid); border-radius:var(--r-md); padding:10px 12px; outline:none;">
+    </div>
+
+    <div style="margin-bottom: 20px; text-align: left;">
+      <label style="font-family:var(--mono); font-size:10px; color:var(--ink-soft); display:block; margin-bottom:4px;">PASSWORD</label>
+      <input id="pw-input" type="password" placeholder="••••••••" 
+             style="width:100%; font-family:var(--sans); font-size:14px; background:var(--white); border:1px solid var(--rose-mid); border-radius:var(--r-md); padding:10px 12px; outline:none;">
+    </div>
+
+    <button id="btn-submit-login" style="width:100%; background:var(--rose-deep); color:#fff; font-size:14px; font-weight:500; padding:12px; border-radius:99px; border:none; cursor:pointer; font-family:var(--sans);">
+      Enter Dashboard
     </button>
     <div id="pw-error" style="font-size:12px; color:#e24b4a; margin-top:10px; opacity:0; transition:opacity .3s;">
-      Incorrect password — try again.
+      Authentication failed — try again.
     </div>
-    <a href="#" onclick="showBlog(); return false;" style="display:block; margin-top:1.5rem; font-size:12px; color:var(--ink-soft); text-decoration:none;">← Back to blog</a>
+    <a id="login-back-to-blog" style="display:block; margin-top:1.5rem; font-size:12px; color:var(--ink-soft); text-decoration:none; cursor:pointer;">← Back to blog</a>
   </div>
 </div>
 
-<!-- ── ADMIN PAGE ── -->
 <div id="admin-page">
   <nav>
-    <a class="nav-logo" href="#" onclick="showBlog(); return false;"><span class="nav-dot"></span> Neural Notes</a>
-    <div style="font-family:var(--mono);font-size:11px;color:var(--rose);">admin panel</div>
+    <a class="nav-logo" id="admin-brand-home"><span class="nav-dot"></span> Neural Notes</a>
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--rose);">admin panel</div>
+      <button id="btn-logout" style="font-family:var(--mono); font-size:11px; background:transparent; border:1px solid var(--rose-mid); padding:2px 8px; border-radius:4px; color:var(--ink-soft); cursor:pointer;">Logout</button>
+    </div>
   </nav>
 
   <div class="admin-wrap">
@@ -359,12 +361,11 @@ footer a { color: var(--rose-deep); text-decoration: none; }
       </div>
 
       <div class="admin-actions">
-        <button class="btn-publish" id="publish-btn" onclick="publishPost()">Publish post</button>
-        <button class="btn-cancel" onclick="showBlog()">← Back to blog</button>
+        <button class="btn-publish" id="publish-btn">Publish post</button>
+        <button class="btn-cancel id-back-to-blog">← Back to blog</button>
       </div>
     </div>
 
-    <!-- MANAGE -->
     <div class="manage-section">
       <h2>Manage posts</h2>
       <div class="manage-list" id="manage-list">
@@ -376,20 +377,47 @@ footer a { color: var(--rose-deep); text-decoration: none; }
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ── STORAGE CONFIGURATION ──
-const STORAGE_KEY = 'neural_notes_posts';
-const PINNED_KEY  = 'neural_notes_pinned';
-const AUTH_KEY    = 'nn_auth';
+const SUPABASE_URL = "https://gmelmvpgjaecfenyojac.supabase.co";
+// Keep this safe. For complete security, enable Row Level Security (RLS) in Supabase.
+const SUPABASE_ANON_KEY = "sb_publishable_kV0a2srSPZdeMqJZQEv8NA_y73rEMVA";
 
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const SECURE_PASSWORD = "V_ADMIN_PASSWORD"; 
+// State tracking caching layer
+let globalCachedPosts = [];
+let currentFilter = 'all';
 
-function isAuthed() { 
-  return sessionStorage.getItem(AUTH_KEY) === '1'; 
+// Dictionary structures matching Supabase columns
+const catLabel = { project: 'Project', hackathon: 'Hackathon', course: 'Course / Cert', concept: 'Concept' };
+const catTagClass = { project: 'tag-project', hackathon: 'tag-hackathon', course: 'tag-course', concept: 'tag-concept' };
+
+// ── UTILITIES ──
+function fmtDate(val) {
+  if (!val) return '';
+  const parts = val.split('-');
+  if(parts.length < 2) return '';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[parseInt(parts[1],10)-1] + ' ' + parts[0];
 }
 
-// ── ROUTING & ENGINE CONTROLS ──
+function toast(msg) {
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg; 
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Escape data fields helper to prevent basic cross site injection exploits
+function cleanHTML(str) {
+  if(!str) return '';
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+// ── ROUTING CONTROLS ──
 function isAdminRoute() { 
   return window.location.search.includes('admin'); 
 }
@@ -399,83 +427,134 @@ function showBlog() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-page').style.display = 'none';
   document.getElementById('blog-page').style.display = 'block';
-  renderBlog();
+  renderBlogUI();
 }
 
-function showLoginScreen() {
-  document.getElementById('blog-page').style.display = 'none';
-  document.getElementById('admin-page').style.display = 'none';
-  const screen = document.getElementById('login-screen');
-  screen.style.display = 'flex';
-  setTimeout(() => {
-    const input = document.getElementById('pw-input');
-    if(input) input.focus();
-  }, 50);
-}
-
-function showAdminDashboard() {
-  document.getElementById('blog-page').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('admin-page').style.display = 'block';
-  renderManage();
-}
-
-function attemptLogin() {
-  const val = document.getElementById('pw-input').value;
-  
-  // Guard clause against raw replacement strings in deployment
-  const activePassword = (SECURE_PASSWORD.startsWith('%') && SECURE_PASSWORD.endsWith('%')) ? '8540' : SECURE_PASSWORD;
-
-  if (val === activePassword) {
-    sessionStorage.setItem(AUTH_KEY, '1');
-    showAdminDashboard();
+async function showAdminLayout() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    document.getElementById('blog-page').style.display = 'none';
+    document.getElementById('admin-page').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('email-input').focus();
   } else {
-    document.getElementById('pw-input').value = '';
-    document.getElementById('pw-error').style.opacity = '1';
-    setTimeout(() => document.getElementById('pw-error').style.opacity = '0', 2000);
+    document.getElementById('blog-page').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-page').style.display = 'block';
+    renderManageUI();
   }
 }
 
-// ── DATA ACCESS LAYER ──
-function loadPosts() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch { return []; }
-}
-function savePosts(posts) { 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts)); 
-}
-function loadPinned() { 
-  return localStorage.getItem(PINNED_KEY) || null; 
-}
-function savePinned(id) { 
-  if (id) localStorage.setItem(PINNED_KEY, id); else localStorage.removeItem(PINNED_KEY); 
+// ── DATA INTERACTION LAYER ──
+async function fetchPosts() {
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .order('date', { ascending: false });
+
+  if (error) {
+    console.error("Error fetching rows:", error.message);
+    return [];
+  }
+  globalCachedPosts = data || [];
+  return globalCachedPosts;
 }
 
-// ── UI DICTIONARIES ──
-const catLabel = { project: 'Project', hackathon: 'Hackathon', course: 'Course / Cert', concept: 'Concept' };
-const catTagClass = { project: 'tag-project', hackathon: 'tag-hackathon', course: 'tag-course', concept: 'tag-concept' };
+async function handleLogin() {
+  const email = document.getElementById('email-input').value.trim();
+  const password = document.getElementById('pw-input').value;
+  const errorLabel = document.getElementById('pw-error');
 
-function fmtDate(val) {
-  if (!val) return '';
-  const parts = val.split('-');
-  if(parts.length < 2) return '';
-  const y = parts[0];
-  const m = parts[1];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return months[parseInt(m,10)-1] + ' ' + y;
+  if(!email || !password) {
+    errorLabel.textContent = "Please enter both fields.";
+    errorLabel.style.opacity = '1';
+    return;
+  }
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    errorLabel.textContent = "Incorrect credentials — try again.";
+    errorLabel.style.opacity = '1';
+    return;
+  }
+
+  errorLabel.style.opacity = '0';
+  document.getElementById('pw-input').value = "";
+  window.history.replaceState({}, document.title, window.location.pathname + "?admin");
+  showAdminLayout();
 }
 
-function toast(msg) {
-  const t = document.getElementById('toast');
-  if(!t) return;
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+async function handleLogout() {
+  await supabase.auth.signOut();
+  toast("Logged out cleanly.");
+  showBlog();
 }
 
-// ── BLOG RENDER COMPONENT ──
-function renderBlog() {
-  const posts = loadPosts();
-  const pinnedId = loadPinned();
+async function publishPost() {
+  const title = document.getElementById('f-title').value.trim();
+  const description = document.getElementById('f-desc').value.trim();
+  const category = document.getElementById('f-cat').value;
+  const date = document.getElementById('f-date').value;
+  const link = document.getElementById('f-link').value.trim();
+
+  if (!title || !description || !date) {
+    return toast('Missing fields required to create card');
+  }
+
+  const { data, error } = await supabase.from('posts').insert([
+    { title, description, category, date, link, is_pinned: false }
+  ]).select();
+
+  if (error) {
+    console.error(error);
+    return toast('Error publishing content to cloud: ' + error.message);
+  }
+
+  toast('Post published to production database! 🌸');
+  
+  // Reset clean data targets
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-link').value = '';
+  
+  await fetchPosts();
+  renderManageUI();
+}
+
+async function deletePost(id) {
+  if (!confirm('Permanently delete this post record?')) return;
+
+  const { error } = await supabase.from('posts').delete().eq('id', id);
+
+  if (error) return toast('Database deletion dropped error context');
+
+  toast('Post deleted successfully');
+  await fetchPosts();
+  renderManageUI();
+}
+
+async function togglePin(id, currentPinState) {
+  // Turn off previous pinned item if setting a new one
+  if (!currentPinState) {
+    await supabase.from('posts').update({ is_pinned: false }).not('id', 'eq', id);
+  }
+
+  const { error } = await supabase
+    .from('posts')
+    .update({ is_pinned: !currentPinState })
+    .eq('id', id);
+
+  if (error) return toast('Pin state adjustment transaction failed');
+
+  toast(!currentPinState ? 'Post pinned successfully!' : 'Post unpinned.');
+  await fetchPosts();
+  renderManageUI();
+}
+
+// ── RENDER ENGINE INTERACTION ──
+async function renderBlogUI() {
+  const posts = await fetchPosts();
   const grid = document.getElementById('posts-grid');
   const empty = document.getElementById('empty-state');
   const pinnedEl = document.getElementById('pinned-post');
@@ -483,44 +562,48 @@ function renderBlog() {
 
   if(!grid || !empty || !pinnedEl || !counter) return;
 
-  // Purge current dynamic cards
+  // Clear older dynamic loops safely
   Array.from(grid.querySelectorAll('.post-card')).forEach(c => c.remove());
   counter.textContent = posts.length;
 
-  // Process Pin UI Elements
-  const pinnedPost = posts.find(p => p.id === pinnedId);
-  if (pinnedPost) {
+  // Render out the single pinned post element if it matches filters
+  const pinnedPost = posts.find(p => p.is_pinned === true);
+  const showPinnedCondition = pinnedPost && (currentFilter === 'all' || pinnedPost.category === currentFilter);
+
+  if (showPinnedCondition) {
     pinnedEl.classList.remove('hidden');
-    pinnedEl.dataset.id = pinnedPost.id;
     pinnedEl.href = pinnedPost.link || '#';
-    if (pinnedPost.link) { pinnedEl.target = '_blank'; pinnedEl.rel = 'noopener'; }
+    if (pinnedPost.link) { pinnedEl.target = '_blank'; pinnedEl.rel = 'noopener'; } else { pinnedEl.removeAttribute('target'); }
     
-    document.getElementById('pinned-cat-label').textContent = catLabel[pinnedPost.cat] || '';
+    document.getElementById('pinned-cat-label').textContent = catLabel[pinnedPost.category] || '';
     document.getElementById('pinned-title').textContent = pinnedPost.title || '';
-    document.getElementById('pinned-desc').textContent = pinnedPost.desc || '';
-    document.getElementById('pinned-cat-badge').textContent = catLabel[pinnedPost.cat] || '';
+    document.getElementById('pinned-desc').textContent = pinnedPost.description || '';
+    document.getElementById('pinned-cat-badge').textContent = catLabel[pinnedPost.category] || '';
     document.getElementById('pinned-date').textContent = fmtDate(pinnedPost.date);
   } else {
     pinnedEl.classList.add('hidden');
   }
 
-  // Render main post loop cards
-  const gridPosts = posts.filter(p => p.id !== pinnedId);
+  // Loop through regular masonry grid list exclusions
+  const gridPosts = posts.filter(p => !showPinnedCondition || p.id !== pinnedPost.id);
+  const filteredGridPosts = gridPosts.filter(p => currentFilter === 'all' || p.category === currentFilter);
 
-  if (posts.length === 0) {
+  let visibleCount = filteredGridPosts.length + (showPinnedCondition ? 1 : 0);
+  counter.textContent = currentFilter === 'all' ? posts.length : visibleCount;
+
+  if (visibleCount === 0) {
     empty.style.display = 'block';
   } else {
-    empty.style.display = gridPosts.length === 0 ? 'block' : 'none';
-    gridPosts.forEach(p => {
+    empty.style.display = 'none';
+    filteredGridPosts.forEach(p => {
       const card = document.createElement('a');
       card.className = 'post-card';
       card.href = p.link || '#';
-      card.dataset.type = p.cat;
       if (p.link) { card.target = '_blank'; card.rel = 'noopener'; }
       card.innerHTML = `
-        <span class="post-tag ${catTagClass[p.cat]}">${catLabel[p.cat]}</span>
-        <h3>${p.title}</h3>
-        <p>${p.desc}</p>
+        <span class="post-tag ${catTagClass[p.category]}">${catLabel[p.category]}</span>
+        <h3>${cleanHTML(p.title)}</h3>
+        <p>${cleanHTML(p.description)}</p>
         <div class="post-footer">
           <span class="post-date">${fmtDate(p.date)}</span>
           <span class="post-arrow">→</span>
@@ -528,139 +611,94 @@ function renderBlog() {
       grid.appendChild(card);
     });
   }
-  attachFilters();
 }
 
-// ── FILTER SYSTEM COMPONENT ──
-function attachFilters() {
-  const btns = document.querySelectorAll('.filter-btn');
-  const pinnedEl = document.getElementById('pinned-post');
-  const label = document.getElementById('filter-label');
-  const empty = document.getElementById('empty-state');
-
-  btns.forEach(btn => {
-    btn.onclick = () => {
-      btns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const f = btn.dataset.filter;
-      let visible = 0;
-
-      document.querySelectorAll('.post-card').forEach(c => {
-        const show = f === 'all' || c.dataset.type === f;
-        c.classList.toggle('hidden', !show);
-        if (show) visible++;
-      });
-
-      const pinnedId = loadPinned();
-      const posts = loadPosts();
-      const pp = posts.find(p => p.id === pinnedId);
-      const pinnedMatch = f === 'all' || (pp && pp.cat === f);
-      if (pinnedEl) pinnedEl.classList.toggle('hidden', !pinnedMatch);
-      if (pinnedMatch && pp) visible++;
-
-      if (document.getElementById('post-counter')) {
-        document.getElementById('post-counter').textContent = f === 'all' ? posts.length : visible;
-      }
-      if (label) {
-        label.textContent = f === 'all' ? 'Showing all posts' : `${visible} post${visible !== 1 ? 's' : ''} · ${catLabel[f] || f}`;
-      }
-      if (empty) {
-        empty.style.display = visible === 0 ? 'block' : 'none';
-      }
-    };
-  });
-}
-
-// ── WRITE OPERATIONS ──
-function publishPost() {
-  const title = document.getElementById('f-title').value.trim();
-  const desc  = document.getElementById('f-desc').value.trim();
-  const cat   = document.getElementById('f-cat').value;
-  const date  = document.getElementById('f-date').value;
-  const link  = document.getElementById('f-link').value.trim();
-
-  if (!title) { toast('Please add a title.'); return; }
-  if (!desc)  { toast('Please add a description.'); return; }
-
-  const posts = loadPosts();
-  const id = 'post_' + Date.now();
-  posts.unshift({ id, title, desc, cat, date, link });
-  savePosts(posts);
-
-  if (posts.length === 1) savePinned(id);
-
-  document.getElementById('f-title').value = '';
-  document.getElementById('f-desc').value = '';
-  document.getElementById('f-link').value = '';
-
-  toast('Post published! 🌸');
-  renderManage();
-}
-
-// ── CONTENT MANAGEMENT LAYER ──
-function renderManage() {
-  const posts = loadPosts();
-  const pinnedId = loadPinned();
+function renderManageUI() {
   const list = document.getElementById('manage-list');
   const empty = document.getElementById('manage-empty');
 
   if(!list || !empty) return;
   Array.from(list.querySelectorAll('.manage-item')).forEach(i => i.remove());
 
-  if (posts.length === 0) { empty.style.display = 'block'; return; }
+  if (globalCachedPosts.length === 0) { 
+    empty.style.display = 'block'; 
+    return; 
+  }
   empty.style.display = 'none';
 
-  posts.forEach(p => {
+  globalCachedPosts.forEach(p => {
     const item = document.createElement('div');
     item.className = 'manage-item';
-    item.dataset.id = p.id;
-    const isPinned = p.id === pinnedId;
+    const activePinClass = p.is_pinned ? 'pinned-active' : '';
+    const pinLabelText = p.is_pinned ? '★ Pinned' : '☆ Pin';
+    
     item.innerHTML = `
       <div class="manage-item-info">
-        <div class="manage-item-title">${p.title}</div>
-        <div class="manage-item-meta">${catLabel[p.cat]} · ${fmtDate(p.date)}</div>
+        <div class="manage-item-title">${cleanHTML(p.title)}</div>
+        <div class="manage-item-meta">${catLabel[p.category]} · ${fmtDate(p.date)}</div>
       </div>
       <div class="manage-item-actions">
-        <button class="btn-pin ${isPinned ? 'pinned-active' : ''}" onclick="togglePin('${p.id}')">${isPinned ? '★ Featured' : '☆ Feature'}</button>
-        <button class="btn-delete" onclick="deletePost('${p.id}')">Delete</button>
+        <button class="btn-pin ${activePinClass}" data-id="${p.id}" data-state="${p.is_pinned}">${pinLabelText}</button>
+        <button class="btn-delete" data-id="${p.id}">Delete</button>
       </div>`;
+    
+    // Bind operational contexts elements securely inline to clear leaked functions
+    item.querySelector('.btn-pin').onclick = () => togglePin(p.id, p.is_pinned);
+    item.querySelector('.btn-delete').onclick = () => deletePost(p.id);
     list.appendChild(item);
   });
 }
 
-function togglePin(id) {
-  const current = loadPinned();
-  savePinned(current === id ? null : id);
-  renderManage();
-  toast(current === id ? 'Unpinned.' : 'Post featured on homepage!');
+// ── FILTER ACTIONS INITIALIZATION ──
+function initFilters() {
+  const btns = document.querySelectorAll('.filter-btn');
+  const label = document.getElementById('filter-label');
+
+  btns.forEach(btn => {
+    btn.onclick = () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      
+      if (label) {
+        label.textContent = currentFilter === 'all' ? 'Showing all posts' : `Filtered by Context · ${catLabel[currentFilter]}`;
+      }
+      renderBlogUI();
+    };
+  });
 }
 
-function deletePost(id) {
-  if (!confirm('Delete this post?')) return;
-  let posts = loadPosts();
-  posts = posts.filter(p => p.id !== id);
-  savePosts(posts);
-  if (loadPinned() === id) savePinned(null);
-  renderManage();
-  toast('Post deleted.');
-}
+// ── SECURE ORCHESTRATOR EVENT LISTENER LOOP ──
+window.addEventListener('DOMContentLoaded', async () => {
+  // Bind Static Navigation Handles securely
+  document.getElementById('logo-home').onclick = showBlog;
+  document.getElementById('admin-brand-home').onclick = showBlog;
+  document.getElementById('nav-go-admin').onclick = showAdminLayout;
+  document.getElementById('footer-admin-link').onclick = showAdminLayout;
+  document.getElementById('login-back-to-blog').onclick = showBlog;
+  Array.from(document.getElementsByClassName('id-back-to-blog')).forEach(el => el.onclick = showBlog);
+  
+  document.getElementById('btn-submit-login').onclick = handleLogin;
+  document.getElementById('btn-logout').onclick = handleLogout;
+  document.getElementById('publish-btn').onclick = publishPost;
+  
+  // Set up password submission on enter key automatically
+  document.getElementById('pw-input').onkeydown = (e) => { if(e.key === 'Enter') handleLogin(); };
 
-// ── INITIALIZATION ORCHESTRATOR ──
-window.addEventListener('DOMContentLoaded', () => {
+  initFilters();
+
+  // Route protection rules enforcement
+  if (isAdminRoute()) {
+    await showAdminLayout();
+  } else {
+    showBlog();
+  }
+
+  // Pre-populate input configurations safely
   const now = new Date();
   const mm = String(now.getMonth()+1).padStart(2,'0');
   const dateInput = document.getElementById('f-date');
   if(dateInput) dateInput.value = `${now.getFullYear()}-${mm}`;
-
-  if (isAdminRoute()) {
-    if (isAuthed()) {
-      showAdminDashboard();
-    } else {
-      showLoginScreen();
-    }
-  } else {
-    renderBlog();
-  }
 });
 </script>
 </body>
